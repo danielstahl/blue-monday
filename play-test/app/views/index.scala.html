@@ -1,0 +1,9 @@
+@(calculateForm: Form[(String)], result: String)
+@main("Hello") {
+	<H1>Calculator</H1>
+	@helper.form(action = routes.Application.calculate) {
+		@helper.inputText(calculateForm("expression"))
+	}
+	<br/>
+	@result
+}
