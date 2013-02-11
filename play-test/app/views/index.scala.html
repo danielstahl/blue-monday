@@ -1,7 +1,7 @@
 @(calculateForm: Form[(String)], result: String)
-@main("Hello") {
+@main("Calculator") {
 	<H1>Calculator</H1>
-	@helper.form(action = routes.Application.calculate) {
+	@helper.form(action = routes.Application.calculateAsync) {
 		@helper.inputText(calculateForm("expression"))
 	}
 	<br/>

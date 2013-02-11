@@ -1,2 +1,2 @@
 GET     /                           controllers.Application.index
-GET		/calculate					controllers.Application.calculate
+GET		/calculate					controllers.Application.calculateAsync
