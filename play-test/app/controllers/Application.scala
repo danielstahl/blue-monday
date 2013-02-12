@@ -41,4 +41,15 @@ object Application extends Controller {
         futureResult.map( result => Ok(views.html.index(calculateForm, expr + " = " + result)))
       }
   }
+
+  def calculateAjax = Action {
+      implicit request =>
+      val expr = calculateForm.bindFromRequest.get
+      val futureResult = Future {
+        Calculator.apply(expr)
+      }
+      Async {
+        futureResult.map( result => Ok(expr + " = " + result))
+      }
+  }
 }

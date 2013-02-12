@@ -1,11 +1,5 @@
 @(calculateForm: Form[(String)], result: String)
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $.get('/calculate', {expression: "1 + 2"}, function(data) {
-            alert(data);
-        })});
-</script>
 @main("Calculator") {
 	<H1>Calculator</H1>
 	@helper.form(action = routes.Application.calculateAsync) {
@@ -13,4 +7,6 @@
 	}
 	<br/>
 	@result
+    <br/>
+    <span id="result"/>
 }
