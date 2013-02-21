@@ -30,7 +30,7 @@ object Application extends Controller {
         }
       }
       Async {
-        futureResult.map(result => Ok(expr + " = " + result))
+        futureResult.map(result => Ok("" + result))
       }
   }
 
@@ -39,7 +39,7 @@ object Application extends Controller {
       val expr = calculateForm.bindFromRequest.get
 
       try {
-        Ok(expr + " = " + Calculator.apply(expr));
+        Ok("" + Calculator.apply(expr));
       } catch {
         case failure => {
           BadRequest(expr + " = " + failure.getMessage())
