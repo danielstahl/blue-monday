@@ -8,6 +8,8 @@ import models.Calculator
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import views.html.defaultpages.badRequest
+import scala.util.Success
+import scala.util.Failure
 
 object Application extends Controller {
   def index = Action {
@@ -15,22 +17,20 @@ object Application extends Controller {
   }
 
   val calculateForm = Form(
-    "expression" -> text)
+    "expression" -> text
+  )
 
   def calculateAsyncAjax = Action {
     implicit request =>
-      val expr = calculateForm.bindFromRequest.get
-      val futureResult = Future {
-        try {
-          Calculator.apply(expr)
-        } catch {
-          case failure => {
-            failure.getMessage
-          }
-        }
-      }
+      val expression = calculateForm.bindFromRequest.get
+      val futureResult: Future[Double] = Future { Calculator.apply(expression)}
+      
       Async {
-        futureResult.map(result => Ok("" + result))
+        futureResult map {
+          okResult => Ok("" + okResult)
+        } recover {
+          case failure => BadRequest(failure.getMessage())
+        }
       }
   }
 
@@ -42,7 +42,7 @@ object Application extends Controller {
         Ok("" + Calculator.apply(expr));
       } catch {
         case failure => {
-          BadRequest(expr + " = " + failure.getMessage())
+          BadRequest(failure.getMessage())
         }
       }
   }
