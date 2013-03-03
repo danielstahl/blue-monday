@@ -16,7 +16,7 @@
 				$("#result").html(expr + " = " + data)
 			}).error(function(data) {
 				$("#result").removeClass('text-success').addClass('text-error')
-				$("#result").html(expr + " is not a valid expression")
+				$("#result").html(expr + " is not a valid expression: " + data.responseText)
 			});
 		});
 	});
