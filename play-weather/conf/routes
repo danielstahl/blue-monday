@@ -1,0 +1,3 @@
+GET     /                           controllers.Application.index
+GET     /fetchWeather/:location     controllers.Application.fetchWeather(location: String)
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
