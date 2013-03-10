@@ -2,17 +2,16 @@ package models
 
 import org.joda.time.DateTime
 import collection.mutable.ListBuffer
-import xml.{ Node, XML }
-import play.api.libs.json.{ JsObject, Json }
-import org.joda.time.format.{ DateTimeFormat, DateTimeFormatter }
-import play.api.libs.ws.{ WS, Response }
+import xml.{Node, XML}
+import play.api.libs.json.{JsObject, Json}
+import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import play.api.libs.ws.{WS, Response}
 import concurrent.Future
 import scala.concurrent._
 import play.api.cache.Cache
 import scala.xml.Elem
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
-import play.Logger
 
 /**
  * Model for a WeatherForecast
@@ -52,8 +51,13 @@ object WeatherDataConverter {
             cond => {
               Json.obj(
                 "period" -> formatPeriod(cond.from, cond.to),
-                "temperature" -> cond.temperature.value)
-            }))))
+                "temperature" -> cond.temperature.value
+              )
+            }
+          )
+        )
+      )
+    )
   }
 
   def formatPeriod(from: DateTime, to: DateTime): String = {
@@ -84,8 +88,8 @@ object WeatherDataConverter {
       case None => {
         WS.url("http://www.yr.no/place/Sweden/" + locationRestUrls(location) + "/forecast.xml").get().map {
           response => {
-              Cache.set("forcast" + location.toString(), response.xml, CACHE_TIME)
-              response.xml
+            Cache.set("forcast" + location.toString(), response.xml, CACHE_TIME)
+            response.xml
           }
         }
       }
