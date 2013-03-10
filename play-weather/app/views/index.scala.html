@@ -8,8 +8,9 @@
 	$(document).ready(function() {
         var $locations = new Array("stockholm", "karlskoga");
         $($locations).each(function(i, loc) {
+        	var $container = $("#" + loc);
+        	$container.hide();
             $.get('/fetchWeather/' + loc, function(data) {
-                var $container = $("<div>").addClass("span5")
                 $container.append($("<h2>" + data.weatherConditions.location + "</h2>"))
                 var $table = $("<table>").addClass("table")
                 $table.append($("<tr><th>Tid</th><th>Temperatur</th></tr>"))
@@ -17,7 +18,7 @@
                     $table.append($("<tr><td>" + cond.period + "</td><td>" + cond.temperature + "</td></tr>"))
                 });
                 $container.append($table)
-                $("#weather").append($container)
+                $container.show();
             });
         });
 	});
@@ -28,7 +29,8 @@
 <body>
 	<div class="container" id="weather">
 		<H1>Väder</H1>
-
+		<div class="span5" id="stockholm"></div>
+		<div class="span5" id="karlskoga"></div>
 	</div>
 </body>
 </html>

@@ -13,25 +13,13 @@ import play.api.cache.Cache
 
 object Application extends Controller {
 
-
-
-  //http://stackoverflow.com/questions/7686770/proper-way-to-generate-html-dynamically-with-jquery
-
   def fetchWeather(location: String) = Action {
     Async {
       fetchWeatherData(Location.withName(location)).map {
         response => {
-          Ok((convertWeatherDataToJson(parseWeatherData(response.xml))))
+          Ok((convertWeatherDataToJson(parseWeatherData(response))))
         }
       }
-
-       /*
-      Future {
-        val weatherXml = xml.XML.loadFile(locationMockUrls(Location.withName(location)))
-        val json = convertWeatherDataToJson(parseWeatherData(weatherXml))
-        Ok(json)
-      }
-      */
     }
   }
 
