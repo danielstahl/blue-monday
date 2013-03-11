@@ -1,32 +1,54 @@
 package models
 
 import org.joda.time.DateTime
-import collection.mutable.ListBuffer
-import xml.{Node, XML}
+import xml.Node
 import play.api.libs.json.{JsObject, Json}
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
-import play.api.libs.ws.{WS, Response}
-import concurrent.Future
+import play.api.libs.ws.WS
 import scala.concurrent._
 import play.api.cache.Cache
 import scala.xml.Elem
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
+import models.WeatherDataConverter._
+import models.WeatherDataRetriever._
+import scala.Some
 
 /**
  * Model for a WeatherForecast
  */
-case class WeatherConditions(location: String, forcasts: Seq[Forecast]) {
+
+
+object WeatherService {
+  def currentWeather(location: Location.Value): Future[JsObject] = {
+    fetchWeatherData(location).map {
+      response => {
+        convertWeatherDataToJson(parseWeatherData(response))
+      }
+    }
+  }
 }
 
-case class Forecast(from: DateTime, to: DateTime, temperature: Temperature) {
-}
+object WeatherDataRetriever {
+  private val CACHE_TIME = 60 * 10
 
-case class Temperature(value: Double, unit: TemperatureUnit.Value = TemperatureUnit.celsius) {
-}
-
-object TemperatureUnit extends Enumeration {
-  val celsius, fahrenheit = Value
+  def fetchWeatherData(location: Location.Value): Future[Elem] = {
+    val forecast: Option[Elem] = Cache.getAs[Elem]("forcast" + location.toString())
+    forecast match {
+      case None => {
+        WS.url("http://www.yr.no/place/Sweden/" + Location.restUrl(location) + "/forecast.xml").get().map {
+          response => {
+            Cache.set("forcast" + location.toString(), response.xml, CACHE_TIME)
+            response.xml
+          }
+        }
+      }
+      case Some(x) => {
+        future {
+          x
+        }
+      }
+    }
+  }
 }
 
 object WeatherDataConverter {
@@ -51,6 +73,7 @@ object WeatherDataConverter {
             cond => {
               Json.obj(
                 "period" -> formatPeriod(cond.from, cond.to),
+                "time" -> formatDate(cond.from, new DateTime()),
                 "temperature" -> cond.temperature.value
               )
             }
@@ -66,39 +89,13 @@ object WeatherDataConverter {
 
   def formatDate(theDate: DateTime, compareDate: DateTime): String = {
     if (theDate.dayOfYear().get() == compareDate.dayOfYear().get()) {
-      theDate.toString("HH")
+      theDate.toString("HH.mm")
     } else {
-      theDate.toString("EEEE HH")
+      theDate.toString("EEEE HH.mm")
     }
   }
-
-  object Location extends Enumeration() {
-    var stockholm, karlskoga = Value
-  }
-
-  var locationRestUrls = Map(
-    Location.stockholm -> "Stockholm/Stockholm",
-    Location.karlskoga -> "Örebro/Karlskoga")
-
-  private val CACHE_TIME = 60 * 10
-
-  def fetchWeatherData(location: Location.Value): Future[Elem] = {
-    val forecast: Option[Elem] = Cache.getAs[Elem]("forcast" + location.toString())
-    forecast match {
-      case None => {
-        WS.url("http://www.yr.no/place/Sweden/" + locationRestUrls(location) + "/forecast.xml").get().map {
-          response => {
-            Cache.set("forcast" + location.toString(), response.xml, CACHE_TIME)
-            response.xml
-          }
-        }
-      }
-      case Some(x) => {
-        future {
-          x
-        }
-      }
-    }
-  }
-
 }
+
+
+
+
