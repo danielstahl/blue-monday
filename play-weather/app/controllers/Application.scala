@@ -10,7 +10,6 @@ import models._
 object Application extends Controller {
 
   def fetchWeather(location: String) = Action {
-
     Async {
       currentWeather(Location.withName(location)).map {
         json => {
