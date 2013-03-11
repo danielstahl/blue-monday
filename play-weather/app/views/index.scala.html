@@ -6,29 +6,43 @@
 <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-1.7.1.js")"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-        var $locations = new Array("stockholm", "karlskoga");
-        $($locations).each(function(i, loc) {
-        	var $container = $("#" + loc);
-        	$container.hide();
-            $.get('/fetchWeather/' + loc, function(data) {
-                $container.append($("<h2>" + data.weatherConditions.location + "</h2>"))
-                var $table = $("<table>").addClass("table")
-                $table.append($("<tr><th>Tid</th><th>Temperatur</th></tr>"))
-                $(data.weatherConditions.conditions[0]).each(function(i, cond) {
-                    $table.append($("<tr><td>" + cond.period + "</td><td>" + cond.temperature + "</td></tr>"))
-                });
-                $container.append($table)
-                $container.show();
-            });
+        reloadWeather();
+        $("#reload-weather").on('click', function() {
+            reloadWeather();
         });
 	});
 
+    function reloadWeather() {
+        var $locations = new Array("stockholm", "karlskoga");
+
+        $($locations).each(function(i, location) {
+            reloadLocationWeather(location)
+        });
+    }
+
+    function reloadLocationWeather(location) {
+        var $container = $("#" + location);
+        $container.hide();
+        $.get('/fetchWeather/' + location, function(data) {
+            $container.html($("<h2>" + data.weatherConditions.location + "</h2>"))
+            var $table = $("<table>").addClass("table")
+            $table.append($("<tr><th>Tid</th><th>Temperatur</th></tr>"))
+            $(data.weatherConditions.conditions[0]).each(function(i, cond) {
+                $table.append($("<tr><td>" + cond.time + "</td><td>" + cond.temperature + "</td></tr>"))
+            });
+            $container.append($table)
+            $container.show();
+        });
+    }
 
 </script>
 </head>
 <body>
 	<div class="container" id="weather">
-		<H1>Väder</H1>
+        <div class="span10">
+            <H1>Väder</H1>
+            <a href="#" class="btn" id="reload-weather">Ladda om</a>
+        </div>
 		<div class="span5" id="stockholm"></div>
 		<div class="span5" id="karlskoga"></div>
 	</div>

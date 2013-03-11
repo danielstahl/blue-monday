@@ -2,6 +2,7 @@ package models
 
 import org.joda.time.DateTime
 
+
 /**
  *  This is the model for the weather
  */

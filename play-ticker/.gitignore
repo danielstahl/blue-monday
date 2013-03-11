@@ -10,3 +10,5 @@ tmp
 .target
 .worksheet
 bin
+.idea
+.idea_modules

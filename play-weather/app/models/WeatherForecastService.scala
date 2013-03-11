@@ -9,9 +9,9 @@ import play.api.cache.Cache
 import scala.xml.Elem
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Play.current
-import models.WeatherDataConverter._
-import models.WeatherDataRetriever._
 import scala.Some
+import WeatherDataRetriever._
+import WeatherDataConverter._
 
 /**
  * Model for a WeatherForecast
@@ -69,7 +69,7 @@ object WeatherDataConverter {
       "weatherConditions" -> Json.obj(
         "location" -> condition.location,
         "conditions" -> Json.arr(
-          condition.forcasts.map(
+          condition.forecasts.map(
             cond => {
               Json.obj(
                 "period" -> formatPeriod(cond.from, cond.to),

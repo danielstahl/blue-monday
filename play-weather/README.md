@@ -1,4 +1,4 @@
-The play weather application
+Weather application
 ============================
 
-This is the play weather application.
+This is the example play appliction that fetch and display weather data.
