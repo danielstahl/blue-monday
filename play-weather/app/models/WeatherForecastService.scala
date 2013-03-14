@@ -1,22 +1,26 @@
 package models
 
-import org.joda.time.DateTime
-import xml.Node
-import play.api.libs.json.{JsObject, Json}
-import play.api.libs.ws.WS
-import scala.concurrent._
-import play.api.cache.Cache
-import scala.xml.Elem
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.future
+import scala.xml.Elem
+import scala.xml.Node
+
+import org.joda.time.DateTime
+
 import play.api.Play.current
-import scala.Some
-import WeatherDataRetriever._
-import WeatherDataConverter._
+import play.api.cache.Cache
+import play.api.libs.json.JsObject
+import play.api.libs.json.Json
+import play.api.libs.json.Json.toJsFieldJsValueWrapper
+import play.api.libs.ws.WS
+
+import models.WeatherDataRetriever._
+import models.WeatherDataConverter._
 
 /**
- * Model for a WeatherForecast
+ * Service for WeatherForecast
  */
-
 
 object WeatherService {
   def currentWeather(location: Location.Value): Future[JsObject] = {
