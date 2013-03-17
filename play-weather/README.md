@@ -9,4 +9,4 @@ implemented in scala. It demonstrates the following features.
 * Working with xml-processing and generating json-data.
 * Implementing simple REST-services that return json-data.
 * Using jquery to make ajax-calls to retrive json-data and build a dynamic client-side GUI.
-* Using bootstrap to style a website.
+* Using bootstrap, from Twitter, to style a website.
