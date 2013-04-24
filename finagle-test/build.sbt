@@ -1,6 +1,6 @@
 import com.twitter.sbt._
 
-name := "quickstart"
+name := "finagle-test"
 
 version := "1.0"
 
@@ -21,6 +21,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "jline"                 % "2.9.2",
   "com.twitter"    % "scrooge"               % "3.0.1",
   "com.twitter"    % "scrooge-runtime_2.9.2" % "3.0.1",
+  "com.twitter"    % "finagle-http"          % "6.3.0",
   "com.twitter"    % "finagle-core"          % "6.3.0",
   "com.twitter"    % "finagle-thrift"        % "6.3.0",
   "com.twitter"    % "finagle-ostrich4"      % "6.3.0",
