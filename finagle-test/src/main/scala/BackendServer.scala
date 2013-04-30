@@ -1,28 +1,38 @@
 
+import java.util.concurrent.ConcurrentHashMap
+import scala.collection.mutable
+import thrift._
 import com.twitter.finagle.builder.{ServerBuilder, Server}
 import com.twitter.finagle.thrift.ThriftServerFramedCodec
 import com.twitter.util.Future
 import java.net.InetSocketAddress
 import org.apache.thrift.protocol.TBinaryProtocol
-import thrift._
+import collection.JavaConversions._
 
-/**
- *
- */
-object BackendServer {
+object PersonService {
+  val personMap :mutable.ConcurrentMap[String, thrift.Person] = new ConcurrentHashMap[String, thrift.Person]
+
   def main(args: Array[String]) {
-    val processor = new Hello.FutureIface {
-      def hi(name: String) = Future.value("Hello %s, this is a message from the backend server".format(name))
+    val personProcessor = new PersonStorage.FutureIface {
+      def store(person: thrift.Person): Future[Unit] = {
+        personMap.put(person.`name`, person)
+        Future()
+      }
+
+      def retrieve(name: String): Future[thrift.Person] = {
+        personMap.get(name) match {
+          case Some(person) => Future(person)
+          case None => throw PersonStorageException(ErrorCode.NoSuchPersonError, name + " is not a valid person")
+        }
+
+      }
     }
 
-    val service = new Hello.FinagledService(processor, new TBinaryProtocol.Factory())
-
+    val service = new PersonStorage.FinagledService(personProcessor, new TBinaryProtocol.Factory())
     val server: Server = ServerBuilder()
-      .name("HelloBackend")
+      .name("PersonBackend")
       .bindTo(new InetSocketAddress(8081))
       .codec(ThriftServerFramedCodec())
       .build(service)
   }
-
-
 }
