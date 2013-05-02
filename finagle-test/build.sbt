@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   "com.twitter"    % "finagle-http"          % "6.3.0",
   "com.twitter"    % "finagle-core"          % "6.3.0",
   "com.twitter"    % "finagle-thrift"        % "6.3.0",
+  "com.twitter"    % "finagle-redis"         % "6.3.0",
   "com.twitter"    % "finagle-ostrich4"      % "6.3.0",
   "com.fasterxml"  % "jackson-module-scala"  % "1.9.1",
   "org.scalatest" %% "scalatest"             % "1.7.1" % "test"
