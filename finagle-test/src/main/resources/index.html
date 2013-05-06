@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Greeting</title>
+    <link rel="stylesheet" media="screen" href="/css/bootstrap.css">
+    <script type="text/javascript" src="/js/jquery-2.0.0.js"></script>
+    <script type="text/javascript" src="/js/json2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.getJSON("http://localhost:8080/person/kalle", function(data) {
+                $("#result").html(data.name + " " + data.age + " years old")
+            }).error(function(data) {
+                alert("Error: " + data.responseText);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Person</h1>
+        <p class="lead" id="result"></p>
+    </div>
+</body>
+</html>

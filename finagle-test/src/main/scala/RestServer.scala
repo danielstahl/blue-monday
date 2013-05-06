@@ -20,7 +20,7 @@ import com.twitter.finagle.http.path._
 /**
  *
  */
-object MainServer {
+object RestServer {
   def main(args: Array[String]) {
     val backendService: Service[ThriftClientRequest, Array[Byte]] = ClientBuilder()
       .hosts(new InetSocketAddress(8081))
@@ -54,6 +54,7 @@ class Respond(backendService: Service[ThriftClientRequest, Array[Byte]]) extends
           backendClientResponse =>
             val response = Response()
             response.setContentTypeJson()
+            response.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"))
             response.content = ChannelBuffers.copiedBuffer(mapper.writeValueAsBytes(backendClientResponse))
             response
         } rescue {

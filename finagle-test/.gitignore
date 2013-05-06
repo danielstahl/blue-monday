@@ -13,3 +13,4 @@ tmp
 .idea_modules
 *.iml
 bin
+log
