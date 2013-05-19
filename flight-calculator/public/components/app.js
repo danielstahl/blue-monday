@@ -2,7 +2,7 @@
 
 define(
 	[
-	 './calculateForm'
+	 './calculateform'
 	 ],
 	 
 	 function(CalculateFormUI) {
