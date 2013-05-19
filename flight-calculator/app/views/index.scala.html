@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Calculator</title>
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")"/>
+    
+
+
+</head>
+<body>
+	<div class="container">
+		<H1>Calculator</H1>
+		<form id="calculateform">
+			<input id="expr" name="expression" type="text" value="" /> 
+			<input type="submit" value="Calculate" />
+		</form>
+		<p class="lead" id="result" ></p>
+	</div>
+	<script data-main="/assets/components/requireMain.js" src="@routes.Assets.at("components/requirejs/require.js")"></script>
+</body>
+</html>
