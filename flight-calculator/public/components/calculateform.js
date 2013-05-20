@@ -14,7 +14,8 @@ define(
 		        	alert(e)		
 		        });*/
 				this.on('submit', function() {
-		        	alert(this)		
+		        	//alert(this)	
+		        	this.trigger('calculateFormEvent', $("input:first").val())
 		        });
 		    });
 		}
