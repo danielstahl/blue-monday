@@ -17,7 +17,7 @@ require.config({
 			deps: ['jquery', 'es5shim', 'es5sham']
 		},
 		'components/app': {
-			deps: ['components/flight/lib/index']
+			deps: ['components/flight/lib/index', 'components/flight/tools/debug/debug']
 		}
 	}
 });
@@ -25,11 +25,3 @@ require.config({
 require(['components/app'], function(App) {
 	App.initialize();
 });
-
-/*
-require(["jquery"], function($) {
-	$(document).ready(function() {
-		alert('Hello world')
-	});
-});
-*/

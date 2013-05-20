@@ -10,12 +10,9 @@ define(
 		function calculateForm() {
 			
 			this.after('initialize', function() {
-		        /*this.on('click', function(e) {
-		        	alert(e)		
-		        });*/
 				this.on('submit', function() {
-		        	//alert(this)	
-		        	this.trigger('calculateFormEvent', $("input:first").val())
+		        	this.trigger(document, 'calculateFormEvent', {payload: $("input:first").val()});
+                    return false;
 		        });
 		    });
 		}

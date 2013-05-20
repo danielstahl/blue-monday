@@ -2,12 +2,16 @@
 
 define(
 	[
-	 './calculateform'
+	    './calculateform',
+        './calculateresult',
+        'components/flight/tools/debug/debug'
+
 	 ],
 	 
-	 function(CalculateFormUI) {
+	 function(CalculateFormUI, ResultUI) {
 		var initialize = function() {
-			CalculateFormUI.attachTo('#calculateform')
+			CalculateFormUI.attachTo('#calculateform');
+            ResultUI.attachTo('#result');
 		}
 		return {
 			initialize: initialize
