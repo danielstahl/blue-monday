@@ -1,3 +1,4 @@
 GET     /                           controllers.Application.index
-GET     /calculateAjax              controllers.Application.calculateAsyncAjax
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET		/calculate					controllers.Application.calculate
+GET		/calculateAkka					controllers.Application.calculateAkka

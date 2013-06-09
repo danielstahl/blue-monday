@@ -10,6 +10,11 @@ import play.api.libs.concurrent.Execution.Implicits._
 import views.html.defaultpages.badRequest
 import scala.util.Success
 import scala.util.Failure
+import models.CalculatorActor
+import akka.pattern.ask
+import play.api.libs.concurrent.Execution.Implicits._
+import akka.util.Timeout
+import scala.concurrent.duration._
 
 object Application extends Controller {
   def index = Action {
@@ -17,14 +22,12 @@ object Application extends Controller {
   }
 
   val calculateForm = Form(
-    "expression" -> text
-  )
+    "expression" -> text)
 
-  def calculateAsyncAjax = Action {
+  def calculate() = Action {
     implicit request =>
       val expression = calculateForm.bindFromRequest.get
-      val futureResult: Future[Double] = Future { Calculator.apply(expression)}
-      
+      val futureResult: Future[Double] = Future { Calculator.apply(expression) }
       Async {
         futureResult map {
           okResult => Ok("" + okResult)
@@ -34,15 +37,14 @@ object Application extends Controller {
       }
   }
 
-  def calculateAjax = Action {
+  def calculateAkka() = Action {
     implicit request =>
-      val expr = calculateForm.bindFromRequest.get
-
-      try {
-        Ok("" + Calculator.apply(expr));
-      } catch {
-        case failure: RuntimeException => {
-          BadRequest(failure.getMessage())
+      val expression = calculateForm.bindFromRequest.get
+      Async {
+        implicit val timeout = Timeout(5.seconds)
+        CalculatorActor.ref ? CalculatorActor.CalculateEvent(expression) map {
+          case CalculatorActor.ResultEvent(result) => Ok(result)
+          case CalculatorActor.ErrorEvent(e) => BadRequest(e.getMessage())
         }
       }
   }
