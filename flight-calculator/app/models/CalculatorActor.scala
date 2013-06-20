@@ -11,19 +11,25 @@ class CalculatorActor extends Actor {
   
 	def receive = {
 	  case CalculateEvent(expression) => {
-	    try {
-		  sender ! ResultEvent("" + Calculator.apply(expression))
+	    sender ! calculate()
+	  }
+	  
+	  def calculate(): Event = {
+	   try {
+		  ResultEvent("" + Calculator.apply(expression))
 	    } catch {
-	      case e: RuntimeException => sender ! ErrorEvent(e)	      
-	    }
+	      case e: RuntimeException => ErrorEvent(e)	      
+	    }		  
 	  }
 	}
+  
+  	
 }
 
 object CalculatorActor {
   trait Event
-  case class CalculateEvent(expression: String)
-  case class ResultEvent(result: String)
-  case class ErrorEvent(exception: Exception)
+  case class CalculateEvent(expression: String) extends Event
+  case class ResultEvent(result: String) extends Event
+  case class ErrorEvent(exception: Exception) extends Event
   lazy val ref = Akka.system.actorOf(Props[CalculatorActor], name = "calculateactor")
 }
