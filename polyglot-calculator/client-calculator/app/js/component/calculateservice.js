@@ -13,17 +13,17 @@ define(
                 var expr = data.payload;
                 var myComp = this;
 
-                $.get('/calculateAkka', {
+                $.get('http://localhost:9000/calculate', {
                     expression: expr
                 }, function(data) {
                     myComp.trigger(document, 'calculateResultEvent', {payload: expr + " = " + data});
                 }).error(function(data) {
                     myComp.trigger(document, 'calculateErrorResultEvent', {payload: expr + " is not a valid expression: " + data.responseText});
                 });
-            }
+            };
 
             this.after('initialize', function() {
-                this.on(document, 'calculateFormEvent', this.restService)
+                this.on(document, 'calculateFormEvent', this.restService);
             });
         }
     }
