@@ -41,11 +41,6 @@ object Application extends Controller {
         		ACCESS_CONTROL_ALLOW_ORIGIN -> origin)
         case None => result
       }
-      
-      
-      
-      action(request).withHeaders(
-        ACCESS_CONTROL_ALLOW_ORIGIN -> request.headers.get(ORIGIN).getOrElse("*"))
     }
 
     lazy val parser = action.parser

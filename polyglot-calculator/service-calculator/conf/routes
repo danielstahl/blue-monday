@@ -3,4 +3,4 @@
 # ~~~~
 
 # Home page
-GET     /calculate                       controllers.Application.calculate()
+GET     /service/calculate               controllers.Application.calculate()
