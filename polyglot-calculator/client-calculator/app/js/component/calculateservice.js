@@ -13,7 +13,7 @@ define(
                 var expr = data.payload;
                 var myComp = this;
 
-                $.get('http://localhost:9000/service/calculate', {
+                $.get('/service/calculate', {
                     expression: expr
                 }, function(data) {
                     myComp.trigger(document, 'calculateResultEvent', {payload: expr + " = " + data});
