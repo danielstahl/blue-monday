@@ -1,4 +1,4 @@
-'use strict';
+/* global define */
 
 define(
   [
@@ -8,6 +8,7 @@ define(
   ],
 
   function(CalculateFormUI, CalculateServiceUI, CalculateResultUI) {
+    'use strict';
     var initialize = function() {
       CalculateFormUI.attachTo('#calculateform');
       CalculateServiceUI.attachTo(document);

@@ -1,4 +1,4 @@
-'use strict';
+/* global define, $ */
 
 define(
     [
@@ -6,9 +6,11 @@ define(
     ],
 
     function(defineComponent) {
+        'use strict';
         return defineComponent(calculateService);
 
         function calculateService() {
+            /* jshint validthis: true */
             this.restService = function(e, data) {
                 var expr = data.payload;
                 var myComp = this;

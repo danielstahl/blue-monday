@@ -1,4 +1,4 @@
-'use strict';
+/* global requirejs, require */
 
 requirejs.config({
   baseUrl: '',
@@ -10,5 +10,6 @@ requirejs.config({
 });
 
 require(['page/default'], function(App) {
+    'use strict';
     App.initialize();
 });
