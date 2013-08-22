@@ -13,7 +13,7 @@ define(
                 var expr = data.payload;
                 var myComp = this;
 
-                $.get('/calculateAkka', {
+                $.get('/calculate', {
                     expression: expr
                 }, function(data) {
                     myComp.trigger(document, 'calculateResultEvent', {payload: expr + " = " + data});
