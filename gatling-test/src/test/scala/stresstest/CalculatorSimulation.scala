@@ -14,24 +14,23 @@ import assertions._
  */
 class CalculatorSimulation extends Simulation {
   val httpProtocol = http.baseURL("http://localhost:9000")
-  
-		  
+
   val scn = scenario("Calculator scenario"). 
-  	repeat(20) {
+  	repeat(40) {
 	    exec(http("Index page").
-	      get("http://localhost:9000").
+	      get("/").
 	      check(status is 200)).
 	    pause(100 millis, 200 millis).
 	    exec(http("Calculate 1 + 4").
-	      get("http://localhost:9000/calculateAkka?expression=1%2B4").
+	      get("/calculate?expression=1%2B4").
 	      check(status is 200)).
 	    pause(50 millis, 300 millis).
 	    exec(http("Error 6/").
-	      get("http://localhost:9000/calculateAkka?expression=6%2F").
+	      get("/calculate?expression=6%2F").
 	      check(status is 400))
   	}
       
 
-  setUp(scn.inject(ramp(60 users) over (40 seconds)))
+  setUp(scn.inject(ramp(500 users) over (70 seconds)))
   	.protocols(httpProtocol)
 }
