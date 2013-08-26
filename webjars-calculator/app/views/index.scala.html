@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Webjars test</title>
+    <link rel="stylesheet" href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+</head>
+
+<body>
+<div class="container">
+    <h1>Calculator</h1>
+
+    <form id="calculateform">
+        <input id="expr" name="expression" type="text" value=""/>
+        <input type="submit" value="Calculate"/>
+    </form>
+    <p class="lead" id="result"></p>
+</div>
+</body>
+</html>

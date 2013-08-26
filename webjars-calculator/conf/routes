@@ -1,0 +1,3 @@
+GET /               controllers.Application.index
+GET /webjars/*file  controllers.WebJarAssets.at(file)
+GET	/calculate	    controllers.Application.calculate
