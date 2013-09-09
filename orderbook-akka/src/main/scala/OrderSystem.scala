@@ -3,10 +3,13 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-case class OrderMessage(uuid: String, orderbook: String, volume: Long, price: Double) extends ClientMessage(uuid)
 class ClientMessage(uuid: String)
+
+case class OrderMessage(uuid: String, orderbook: String, volume: Long, price: Double) extends ClientMessage(uuid)
+
 case class OrderStatusMessage(orderbook: String, volume: Long, price: Double)
 
+case class ClientLogout(uuid: String) extends ClientMessage(uuid)
 
 trait CommonActor { actor: Actor =>
   def commonReceive: Actor.Receive = {
@@ -29,6 +32,9 @@ class ClientSupervisorActor extends Actor with CommonActor {
 
     case orderStatusMessage: OrderStatusMessage =>
       context.children foreach(_ ! orderStatusMessage)
+
+    case clientLogout @ ClientLogout(uuid) =>
+      context.child(uuid).foreach(_.forward(clientLogout))
   }
 }
 
@@ -41,6 +47,9 @@ class ClientActor(uuid: String) extends Actor with CommonActor {
       marketActor ! om
     case osm: OrderStatusMessage =>
       println(s"Client $uuid got orderbook status $osm")
+    case ClientLogout(uuid) =>
+      println(s"Client ${uuid} in actor ${self} is logging out")
+      context.stop(self)
   }
 }
 
@@ -80,7 +89,16 @@ object ClientMain {
     clientSupervisor ! OrderMessage(client2, "ERIC-B", 300, 11.5)
     Thread.sleep(100)
 
-    clientSupervisor ! "Hello world"
+
+    clientSupervisor ! ClientLogout(client1)
+    Thread.sleep(100)
+
+    clientSupervisor ! OrderMessage(client2, "ABB", 400, 14.8)
+    Thread.sleep(100)
+
+    clientSupervisor ! ClientLogout(client2)
+    Thread.sleep(100)
+
     system.shutdown()
   }
 }
