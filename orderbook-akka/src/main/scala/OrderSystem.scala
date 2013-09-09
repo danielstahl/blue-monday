@@ -1,18 +1,27 @@
-import akka.actor.{ActorRef, Props, ActorSystem, Actor}
-import akka.pattern.ask
-import akka.pattern._
+import akka.actor.{Props, ActorSystem, Actor}
 import akka.util.Timeout
 import scala.concurrent.duration._
-import java.util.UUID
+import scala.language.postfixOps
 
 case class OrderMessage(uuid: String, orderbook: String, volume: Long, price: Double) extends ClientMessage(uuid)
 class ClientMessage(uuid: String)
 case class OrderStatusMessage(orderbook: String, volume: Long, price: Double)
 
 
-class ClientSupervisorActor extends Actor {
+trait CommonActor { actor: Actor =>
+  def commonReceive: Actor.Receive = {
+    case default =>
+      println(s"$actor.context does not understand: $default")
+  }
 
-  def receive = {
+  def myReceive: Actor.Receive
+
+  def receive = myReceive orElse commonReceive
+}
+
+
+class ClientSupervisorActor extends Actor with CommonActor {
+  def myReceive = {
     case orderMessage @ OrderMessage(uuid, orderbook, volume, price) =>
       context.child(uuid).getOrElse {
         context.actorOf(Props[ClientActor](new ClientActor(uuid)), uuid)
@@ -23,40 +32,33 @@ class ClientSupervisorActor extends Actor {
   }
 }
 
-class ClientActor(uuid: String) extends Actor {
+class ClientActor(uuid: String) extends Actor with CommonActor {
   lazy val marketActor = context.actorSelection("/user/marketActor")
 
-  def receive = {
+  def myReceive = {
     case om: OrderMessage =>
       println(s"Client $uuid send orderbook $om update")
       marketActor ! om
     case osm: OrderStatusMessage =>
       println(s"Client $uuid got orderbook status $osm")
-    case default =>
-      println(s"$self does not understand: $default")
   }
 }
 
-class MarketActor extends Actor {
-  def receive = {
+class MarketActor extends Actor with CommonActor {
+  def myReceive = {
     case orderMessage @ OrderMessage(uuid, orderbook, volume, price) =>
       context.child(orderbook).getOrElse {
         context.actorOf(Props[OrderbookActor](new OrderbookActor(orderbook)))
       } forward orderMessage
-    case default =>
-      println(s"$self does not understand: $default")
-
   }
 }
 
-class OrderbookActor(orderbook: String) extends Actor {
+class OrderbookActor(orderbook: String) extends Actor with CommonActor {
   lazy val clientSupervisorActor = context.actorSelection("/user/clientSupervisorActor")
 
-  def receive = {
+  def myReceive = {
     case OrderMessage(uuid, orderbook, volume, price) =>
       clientSupervisorActor ! OrderStatusMessage(orderbook, volume, price)
-    case default =>
-      println(s"$self does not understand: $default")
   }
 }
 
@@ -78,6 +80,7 @@ object ClientMain {
     clientSupervisor ! OrderMessage(client2, "ERIC-B", 300, 11.5)
     Thread.sleep(100)
 
+    clientSupervisor ! "Hello world"
     system.shutdown()
   }
 }
