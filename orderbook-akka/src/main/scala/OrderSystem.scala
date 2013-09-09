@@ -11,7 +11,7 @@ case class OrderStatusMessage(orderbook: String, volume: Long, price: Double)
 trait CommonActor { actor: Actor =>
   def commonReceive: Actor.Receive = {
     case default =>
-      println(s"$actor.context does not understand: $default")
+      println(s"${actor.self} does not understand: $default")
   }
 
   def myReceive: Actor.Receive
